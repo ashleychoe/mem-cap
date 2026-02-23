@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mem Cap — photo strip maker</title>
+<meta name="description" content="Make black & white photo strips in seconds. Import photos or take them with your camera, customize the frame, and download.">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzExMSIvPjxyZWN0IHg9IjQiIHk9IjgiIHdpZHRoPSIyNCIgaGVpZ2h0PSIxNiIgcng9IjEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cmVjdCB4PSI3IiB5PSI1IiB3aWR0aD0iMyIgaGVpZ2h0PSI0IiByeD0iMC41IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxMyIgeT0iNSIgd2lkdGg9IjMiIGhlaWdodD0iNCIgcng9IjAuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC43Ii8+PHJlY3QgeD0iMTkiIHk9IjUiIHdpZHRoPSIzIiBoZWlnaHQ9IjQiIHJ4PSIwLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNyIvPjxyZWN0IHg9IjciIHk9IjIzIiB3aWR0aD0iMyIgaGVpZ2h0PSI0IiByeD0iMC41IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxMyIgeT0iMjMiIHdpZHRoPSIzIiBoZWlnaHQ9IjQiIHJ4PSIwLjUiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNyIvPjxyZWN0IHg9IjE5IiB5PSIyMyIgd2lkdGg9IjMiIGhlaWdodD0iNCIgcng9IjAuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC43Ii8+PHJlY3QgeD0iOSIgeT0iMTEiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxMCIgcng9IjEiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuMTUiLz48L3N2Zz4=">
+
+<!-- Open Graph (Facebook, Instagram link previews, iMessage) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ashleychoe.github.io/mem-cap/">
+<meta property="og:title" content="Mem Cap">
+<meta property="og:description" content="Make black & white photo strips in seconds. Import photos or take them with your camera, customize the frame, and download.">
+<meta property="og:image" content="https://ashleychoe.github.io/mem-cap/og-image.png">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://ashleychoe.github.io/mem-cap/">
+<meta name="twitter:title" content="Mem Cap">
+<meta name="twitter:description" content="Make black & white photo strips in seconds.">
+<meta name="twitter:image" content="https://ashleychoe.github.io/mem-cap/og-image.png">
+
+<!-- Theme color (browser chrome on mobile) -->
+<meta name="theme-color" content="#111111">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400&family=DM+Mono:wght@300;400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7f5;
+    --fg: #111;
+    --muted: #999;
+    --border: #e0e0e0;
+    --hover: #f0f0f0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 52px 24px 100px;
+  }
+
+  header { text-align: center; margin-bottom: 48px; }
+  h1 { font-size: 1rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg); margin-bottom: 4px; }
+  .subtitle { font-family: 'DM Mono', monospace; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.15em; color: var(--muted); }
+
+  .page { display: none; width: 100%; max-width: 860px; gap: 80px; align-items: flex-start; flex-wrap: wrap; justify-content: center; opacity: 0; transition: opacity 0.35s ease; }
+  .page.active { display: flex; opacity: 1; }
+
+  .back-btn { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; padding: 0; margin-bottom: 40px; align-self: flex-start; transition: color 0.15s; display: flex; align-items: center; gap: 6px; }
+  .back-btn:hover { color: var(--fg); }
+
+  .panel-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; display: block; }
+
+  /* ══════════════════════════
+     PAGE 1 — PRINT
+  ══════════════════════════ */
+  .upload-panel { display: flex; flex-direction: column; gap: 8px; width: 240px; }
+
+  /* Input mode toggle */
+  .mode-toggle { display: flex; gap: 0; margin-bottom: 4px; border: 1px solid var(--border); width: 100%; }
+  .mode-btn {
+    flex: 1; font-family: 'DM Mono', monospace; font-size: 0.56rem; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 8px 0; cursor: pointer; border: none;
+    background: transparent; color: var(--muted); transition: all 0.15s;
+  }
+  .mode-btn.active { background: var(--fg); color: var(--bg); }
+  .mode-btn:first-child { border-right: 1px solid var(--border); }
+
+  .slot {
+    border: 1px solid var(--border); height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: background 0.15s; background: #fff;
+  }
+  .slot:hover { background: var(--hover); }
+  .slot.filled { border-color: #ccc; }
+  .slot img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1); display: block; }
+  .slot-num { position: absolute; top: 6px; left: 8px; font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--border); pointer-events: none; }
+  .slot.filled .slot-num { color: rgba(255,255,255,0.55); }
+  .slot-hint { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); }
+  .slot input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .remove-btn { position: absolute; bottom: 5px; right: 6px; background: rgba(255,255,255,0.92); border: 1px solid var(--border); color: var(--muted); font-size: 0.52rem; font-family: 'DM Mono', monospace; padding: 2px 6px; cursor: pointer; opacity: 0; transition: opacity 0.15s; }
+  .slot:hover .remove-btn { opacity: 1; }
+
+  /* Camera slot — click to open camera */
+  .slot.cam-slot { cursor: pointer; }
+  .slot.cam-slot:not(.filled):hover { background: #f5f5f5; }
+  .cam-hint { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px; }
+  .cam-hint svg { opacity: 0.4; }
+
+  /* Take-all button (camera mode) */
+  .take-all-btn {
+    margin-top: 4px; width: 100%; background: transparent;
+    border: 1px solid var(--border); color: var(--fg);
+    font-family: 'DM Mono', monospace; font-size: 0.58rem; font-weight: 300;
+    letter-spacing: 0.18em; text-transform: uppercase; padding: 10px;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .take-all-btn:hover { background: var(--hover); }
+
+  .print-btn { margin-top: 16px; width: 100%; background: var(--fg); border: none; color: var(--bg); font-family: 'DM Mono', monospace; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; padding: 13px; cursor: pointer; transition: opacity 0.2s; }
+  .print-btn:hover { opacity: 0.75; }
+  .print-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  /* Printer */
+  .strip-side { display: flex; flex-direction: column-reverse; align-items: center; }
+  .printer-machine { width: 200px; background: #fff; border: 1px solid var(--border); border-top: none; padding: 14px 16px 12px; position: relative; z-index: 10; }
+  .printer-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .printer-title { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .printer-lights { display: flex; gap: 6px; }
+  .light { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background 0.3s, box-shadow 0.3s; }
+  .light.green { background: #5cb85c; box-shadow: 0 0 5px #5cb85c88; }
+  .light.amber { background: #e6a817; box-shadow: 0 0 6px #e6a81788; }
+  .slot-opening { width: 100%; height: 10px; background: #111; border-radius: 1px; }
+  .roller-bar { width: 100%; height: 6px; background: repeating-linear-gradient(90deg, #222 0px, #222 3px, #333 3px, #333 7px); border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  @keyframes rollerMove { from { background-position: 0 0; } to { background-position: -7px 0; } }
+  .roller-bar.spinning { animation: rollerMove 0.1s linear infinite; }
+  .printer-status { margin-top: 10px; font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); text-align: center; min-height: 12px; }
+
+  .strip-clip {
+    width: 168px;
+    height: 0;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    /* Anchor to bottom so content grows upward */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .strip-paper {
+    background: #fff;
+    width: 168px;
+    padding: 14px 10px 10px; /* top padding for label, bottom for first photo */
+    position: relative;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column-reverse; /* photos stack bottom-up */
+  }
+  .strip-photo-frame { width: 148px; height: 108px; overflow: hidden; position: relative; background: #f0f0f0; }
+  .strip-photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%) contrast(1.15) brightness(0.95); }
+  .photo-reveal { position: absolute; left: 0; right: 0; top: 0; background: #f0f0f0; height: 100%; pointer-events: none; }
+  .scan-line { position: absolute; left: 0; right: 0; height: 3px; top: 0; background: linear-gradient(to bottom, transparent, rgba(160,210,255,0.8), transparent); pointer-events: none; opacity: 0; }
+  .strip-label { text-align: center; font-family: 'DM Mono', monospace; font-size: 0.5rem; letter-spacing: 0.2em; color: #bbb; text-transform: uppercase; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+
+  .post-actions { margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; width: 168px; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+  .post-actions.visible { opacity: 1; pointer-events: all; }
+  .save-btn, .customize-btn { width: 100%; border: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 0; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; text-align: center; }
+  .save-btn { background: transparent; color: var(--fg); }
+  .save-btn:hover { background: var(--hover); }
+  .customize-btn { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .customize-btn:hover { opacity: 0.78; }
+
+  @keyframes lightPulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  .light.pulsing { animation: lightPulse 0.6s ease-in-out infinite; }
+
+  /* ══════════════════════════
+     CAMERA MODAL
+  ══════════════════════════ */
+  .camera-modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: #000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .camera-modal.open { opacity: 1; pointer-events: all; }
+
+  .camera-inner {
+    position: relative;
+    width: min(480px, 100vw);
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+
+  /* Top bar */
+  .camera-topbar {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: #000;
+  }
+  .camera-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: #555; }
+  .camera-close-btn { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: #666; background: none; border: none; cursor: pointer; text-transform: uppercase; transition: color 0.15s; }
+  .camera-close-btn:hover { color: #fff; }
+
+  /* Viewfinder */
+  .viewfinder-wrap {
+    position: relative;
+    width: min(480px, 100vw);
+    aspect-ratio: 4/3;
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+  #camVideo {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scaleX(-1); /* mirror for selfie feel */
+  }
+
+  /* Corner brackets */
+  .vf-corner {
+    position: absolute; width: 20px; height: 20px;
+    border-color: rgba(255,255,255,0.35); border-style: solid;
+    pointer-events: none;
+  }
+  .vf-corner.tl { top: 14px; left: 14px; border-width: 1px 0 0 1px; }
+  .vf-corner.tr { top: 14px; right: 14px; border-width: 1px 1px 0 0; }
+  .vf-corner.bl { bottom: 14px; left: 14px; border-width: 0 0 1px 1px; }
+  .vf-corner.br { bottom: 14px; right: 14px; border-width: 0 1px 1px 0; }
+
+  /* Countdown overlay */
+  .countdown-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .countdown-num {
+    font-family: 'DM Sans', sans-serif; font-size: 7rem; font-weight: 300;
+    color: rgba(255,255,255,0.9);
+    opacity: 0; transform: scale(1.3);
+    transition: opacity 0.15s, transform 0.15s;
+    text-shadow: 0 0 40px rgba(0,0,0,0.5);
+    line-height: 1;
+  }
+  .countdown-num.show { opacity: 1; transform: scale(1); }
+
+  /* Flash overlay */
+  .flash-overlay {
+    position: absolute; inset: 0;
+    background: #fff; opacity: 0; pointer-events: none;
+    transition: opacity 0.05s;
+  }
+  .flash-overlay.flash { opacity: 1; }
+
+  /* Frame progress dots */
+  .frame-dots {
+    display: flex; gap: 8px; padding: 14px 0 4px;
+  }
+  .frame-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    border: 1px solid #444;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .frame-dot.done { background: #fff; border-color: #fff; }
+  .frame-dot.active { border-color: #888; }
+
+  /* Bottom controls */
+  .camera-controls { padding: 20px 0 28px; display: flex; align-items: center; gap: 32px; }
+
+  .shutter-btn {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #fff; border: 3px solid #333;
+    cursor: pointer; position: relative;
+    transition: transform 0.1s, background 0.1s;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px #fff inset;
+  }
+  .shutter-btn::after {
+    content: ''; position: absolute; inset: 5px;
+    border-radius: 50%; background: #fff;
+    border: 1px solid #ddd;
+  }
+  .shutter-btn:hover { transform: scale(1.05); }
+  .shutter-btn:active { transform: scale(0.95); background: #eee; }
+  .shutter-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+  .cam-status { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: #555; text-transform: uppercase; min-width: 80px; text-align: center; }
+
+  /* Thumbnails strip at bottom of camera */
+  .cam-thumbs { display: flex; gap: 4px; padding: 0 0 20px; }
+  .cam-thumb {
+    width: 52px; height: 40px; border: 1px solid #222;
+    background: #111; overflow: hidden; position: relative;
+    flex-shrink: 0;
+  }
+  .cam-thumb img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); display: block; transform: scaleX(-1); }
+  .cam-thumb-num { position: absolute; top: 3px; left: 4px; font-family: 'DM Mono', monospace; font-size: 0.45rem; color: #444; }
+  .cam-thumb.filled .cam-thumb-num { color: rgba(255,255,255,0.5); }
+
+  /* Take-all sequence info */
+  .cam-sequence-note { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em; color: #444; text-transform: uppercase; text-align: center; padding-bottom: 4px; }
+
+  /* ══════════════════════════
+     PAGE 2 — CUSTOMIZE
+  ══════════════════════════ */
+  .customize-page-inner { display: flex; gap: 80px; align-items: flex-start; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .customize-panel { display: flex; flex-direction: column; gap: 28px; width: 240px; }
+  .custom-section { display: flex; flex-direction: column; gap: 10px; }
+
+  .swatch-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .swatch { width: 30px; height: 30px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; position: relative; }
+  .swatch.active { border-color: var(--fg); }
+  .swatch.custom-swatch { display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.5rem; color: var(--muted); border: 1px dashed var(--border); overflow: hidden; }
+  .swatch.custom-swatch input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  .border-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .border-opt { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em; padding: 5px 10px; border: 1px solid var(--border); cursor: pointer; background: #fff; color: var(--muted); transition: all 0.15s; text-transform: uppercase; }
+  .border-opt:hover { border-color: var(--fg); color: var(--fg); }
+  .border-opt.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .color-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+  .color-row span { font-family: 'DM Mono', monospace; font-size: 0.52rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .color-row input[type="color"] { width: 30px; height: 24px; border: 1px solid var(--border); cursor: pointer; padding: 1px; background: #fff; }
+
+  .caption-input { width: 100%; border: 1px solid var(--border); background: #fff; font-family: 'DM Mono', monospace; font-size: 0.65rem; font-weight: 300; letter-spacing: 0.1em; padding: 9px 10px; color: var(--fg); outline: none; transition: border-color 0.15s; }
+  .caption-input:focus { border-color: var(--fg); }
+  .caption-input::placeholder { color: #ccc; }
+
+  .pos-options { display: flex; gap: 8px; }
+  .pos-opt { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em; padding: 5px 12px; border: 1px solid var(--border); cursor: pointer; background: #fff; color: var(--muted); transition: all 0.15s; text-transform: uppercase; }
+  .pos-opt.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .sticker-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sticker-btn { width: 38px; height: 38px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s; }
+  .sticker-btn:hover { border-color: var(--fg); background: var(--hover); }
+  .sticker-btn.active { border-color: var(--fg); background: var(--hover); outline: 2px solid var(--fg); outline-offset: -2px; }
+
+  /* Pattern grid */
+  .pattern-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pattern-opt {
+    width: 38px; height: 38px; border: 1px solid var(--border);
+    background: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s; overflow: hidden;
+  }
+  .pattern-opt:hover { border-color: var(--fg); }
+  .pattern-opt.active { border-color: var(--fg); outline: 2px solid var(--fg); outline-offset: -2px; }
+  .pat-preview { width: 38px; height: 38px; display: block; }
+
+  .export-btn { width: 100%; background: var(--fg); border: none; color: var(--bg); font-family: 'DM Mono', monospace; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; padding: 13px; cursor: pointer; transition: opacity 0.2s; margin-top: 8px; }
+  .export-btn:hover { opacity: 0.75; }
+
+  .preview-side { display: flex; flex-direction: column; align-items: flex-start; }
+  #previewCanvas { display: block; box-shadow: 0 8px 32px rgba(0,0,0,0.09); }
+
+  canvas.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mem Cap</h1>
+  <p class="subtitle">4 frames · black & white · yours to keep</p>
+</header>
+
+<!-- ═══ PAGE 1: PRINT ═══ -->
+<div class="page active" id="page1">
+  <div class="upload-panel">
+    <span class="panel-label">Images</span>
+
+    <!-- Mode toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeImport" onclick="setMode('import')">Import</button>
+      <button class="mode-btn" id="modeCamera" onclick="setMode('camera')">Camera</button>
+    </div>
+
+    <div id="slots"></div>
+
+    <!-- Camera mode extras -->
+    <div id="cameraExtras" style="display:none;">
+      <button class="take-all-btn" onclick="startSequence()">▶ Take all 4 in sequence</button>
+    </div>
+
+    <button class="print-btn" id="genBtn" onclick="startPrint()" disabled>Print</button>
+  </div>
+
+  <div class="strip-side">
+    <div class="printer-machine">
+      <div class="printer-top-row">
+        <span class="printer-title">strip·01</span>
+        <div class="printer-lights">
+          <div class="light" id="lR"></div>
+          <div class="light" id="lA"></div>
+          <div class="light" id="lG"></div>
+        </div>
+      </div>
+      <div class="printer-status" id="statusTxt">ready</div>
+      <div class="roller-bar" id="roller"></div>
+      <div class="slot-opening"></div>
+    </div>
+    <div class="strip-clip" id="stripClip">
+      <div class="strip-paper" id="stripPaper"></div>
+    </div>
+    <div class="post-actions" id="postActions">
+      <button class="save-btn" onclick="downloadStrip()">↓ save</button>
+      <button class="customize-btn" onclick="goToCustomize()">customize frame →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: CUSTOMIZE ═══ -->
+<div class="page" id="page2">
+  <div class="customize-page-inner">
+    <div style="display:flex;flex-direction:column;width:240px;">
+      <button class="back-btn" onclick="goToPage1()">← back</button>
+      <div class="customize-panel">
+        <div class="custom-section">
+          <span class="panel-label">Background</span>
+          <div class="swatch-grid">
+            <div class="swatch active" style="background:#ffffff;border-color:#e0e0e0;" onclick="setBg(this,'#ffffff')"></div>
+            <div class="swatch" style="background:#f5f0e8;" onclick="setBg(this,'#f5f0e8')"></div>
+            <div class="swatch" style="background:#111111;" onclick="setBg(this,'#111111')"></div>
+            <div class="swatch" style="background:#e8e0d5;" onclick="setBg(this,'#e8e0d5')"></div>
+            <div class="swatch" style="background:#d4e8d4;" onclick="setBg(this,'#d4e8d4')"></div>
+            <div class="swatch" style="background:#d4dde8;" onclick="setBg(this,'#d4dde8')"></div>
+            <div class="swatch" style="background:#e8d4d4;" onclick="setBg(this,'#e8d4d4')"></div>
+            <div class="swatch" style="background:#ede8f5;" onclick="setBg(this,'#ede8f5')"></div>
+            <div class="swatch" style="background:#f5f0c8;" onclick="setBg(this,'#f5f0c8')"></div>
+            <div class="swatch custom-swatch" title="Custom">+<input type="color" value="#ffffff" oninput="setBgCustom(this)"></div>
+          </div>
+          <span class="panel-label" style="margin-top:8px;">Pattern</span>
+          <div class="pattern-grid" id="patternGrid">
+            <div class="pattern-opt active" data-pat="none" onclick="setPattern(this,'none')"><span style="font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--muted);">None</span></div>
+            <div class="pattern-opt" data-pat="dots" onclick="setPattern(this,'dots')"><canvas class="pat-preview" data-pat="dots"></canvas></div>
+            <div class="pattern-opt" data-pat="grid" onclick="setPattern(this,'grid')"><canvas class="pat-preview" data-pat="grid"></canvas></div>
+            <div class="pattern-opt" data-pat="lines" onclick="setPattern(this,'lines')"><canvas class="pat-preview" data-pat="lines"></canvas></div>
+            <div class="pattern-opt" data-pat="diagonal" onclick="setPattern(this,'diagonal')"><canvas class="pat-preview" data-pat="diagonal"></canvas></div>
+            <div class="pattern-opt" data-pat="crosshatch" onclick="setPattern(this,'crosshatch')"><canvas class="pat-preview" data-pat="crosshatch"></canvas></div>
+            <div class="pattern-opt" data-pat="checker" onclick="setPattern(this,'checker')"><canvas class="pat-preview" data-pat="checker"></canvas></div>
+            <div class="pattern-opt" data-pat="zigzag" onclick="setPattern(this,'zigzag')"><canvas class="pat-preview" data-pat="zigzag"></canvas></div>
+            <div class="pattern-opt" data-pat="confetti" onclick="setPattern(this,'confetti')"><canvas class="pat-preview" data-pat="confetti"></canvas></div>
+          </div>
+        </div>
+        <div class="custom-section">
+          <span class="panel-label">Border</span>
+          <div class="border-options">
+            <div class="border-opt active" onclick="setBorderStyle(this,'none')">None</div>
+            <div class="border-opt" onclick="setBorderStyle(this,'thin')">Thin</div>
+            <div class="border-opt" onclick="setBorderStyle(this,'thick')">Thick</div>
+            <div class="border-opt" onclick="setBorderStyle(this,'soft')">Soft</div>
+            <div class="border-opt" onclick="setBorderStyle(this,'double')">Double</div>
+          </div>
+          <div class="color-row">
+            <span>Color</span>
+            <input type="color" id="borderColorPick" value="#111111" oninput="setBorderColor(this.value)">
+          </div>
+        </div>
+        <div class="custom-section">
+          <span class="panel-label">Caption</span>
+          <input class="caption-input" id="captionInput" type="text" maxlength="40" placeholder="add a caption…" oninput="renderPreview()">
+          <div class="pos-options">
+            <div class="pos-opt active" onclick="setCaptionPos(this,'bottom')">Bottom</div>
+            <div class="pos-opt" onclick="setCaptionPos(this,'top')">Top</div>
+          </div>
+        </div>
+        <div class="custom-section">
+          <span class="panel-label">Stickers</span>
+          <div class="sticker-grid">
+            <button class="sticker-btn active" onclick="setSticker(this,'none')" style="font-size:0.5rem;font-family:'DM Mono',monospace;color:var(--muted);">—</button>
+            <button class="sticker-btn" onclick="setSticker(this,'⭐')">⭐</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🌙')">🌙</button>
+            <button class="sticker-btn" onclick="setSticker(this,'♥')">♥</button>
+            <button class="sticker-btn" onclick="setSticker(this,'✦')">✦</button>
+            <button class="sticker-btn" onclick="setSticker(this,'☁')">☁</button>
+            <button class="sticker-btn" onclick="setSticker(this,'✌')">✌</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🌸')">🌸</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🦋')">🦋</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🍀')">🍀</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🌈')">🌈</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🔮')">🔮</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🎞')">🎞</button>
+            <button class="sticker-btn" onclick="setSticker(this,'📷')">📷</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🎀')">🎀</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🌻')">🌻</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🍒')">🍒</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🦄')">🦄</button>
+            <button class="sticker-btn" onclick="setSticker(this,'✨')">✨</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🎭')">🎭</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🌊')">🌊</button>
+            <button class="sticker-btn" onclick="setSticker(this,'⚡')">⚡</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🪩')">🪩</button>
+            <button class="sticker-btn" onclick="setSticker(this,'🫧')">🫧</button>
+          </div>
+        </div>
+        <button class="export-btn" onclick="exportCustomized()">↓ Export</button>
+      </div>
+    </div>
+    <div class="preview-side">
+      <span class="panel-label">Preview</span>
+      <canvas id="previewCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CAMERA MODAL ═══ -->
+<div class="camera-modal" id="cameraModal">
+  <div class="camera-inner">
+    <div class="camera-topbar">
+      <span class="camera-label" id="camLabel">frame 1 of 4</span>
+      <button class="camera-close-btn" onclick="closeCamera()">close</button>
+    </div>
+
+    <div class="viewfinder-wrap">
+      <video id="camVideo" autoplay playsinline muted></video>
+      <div class="vf-corner tl"></div>
+      <div class="vf-corner tr"></div>
+      <div class="vf-corner bl"></div>
+      <div class="vf-corner br"></div>
+      <div class="countdown-overlay">
+        <div class="countdown-num" id="countdownNum"></div>
+      </div>
+      <div class="flash-overlay" id="flashOverlay"></div>
+    </div>
+
+    <!-- Frame dots progress -->
+    <div class="frame-dots" id="frameDots">
+      <div class="frame-dot active" data-i="0"></div>
+      <div class="frame-dot" data-i="1"></div>
+      <div class="frame-dot" data-i="2"></div>
+      <div class="frame-dot" data-i="3"></div>
+    </div>
+
+    <div class="cam-sequence-note" id="camSeqNote"></div>
+
+    <!-- Thumbnail row -->
+    <div class="cam-thumbs" id="camThumbs">
+      <div class="cam-thumb" id="ct0"><span class="cam-thumb-num">01</span></div>
+      <div class="cam-thumb" id="ct1"><span class="cam-thumb-num">02</span></div>
+      <div class="cam-thumb" id="ct2"><span class="cam-thumb-num">03</span></div>
+      <div class="cam-thumb" id="ct3"><span class="cam-thumb-num">04</span></div>
+    </div>
+
+    <div class="camera-controls">
+      <span class="cam-status" id="camStatus">ready</span>
+      <button class="shutter-btn" id="shutterBtn" onclick="captureFrame()" title="Take photo"></button>
+      <span class="cam-status" style="text-align:left;" id="camFrameCount">0 / 4</span>
+    </div>
+  </div>
+</div>
+
+<canvas id="exportCanvas" class="hidden"></canvas>
+<canvas id="camCapCanvas" class="hidden"></canvas>
+
+<script>
+// ═══ STATE ═══
+const COUNT = 4;
+let images = {};
+let mode = 'import'; // 'import' | 'camera'
+let isPrinting = false;
+let printedDataURLs = null;
+let printedRawURL = null;
+
+// Camera state
+let camStream = null;
+let camTargetSlot = null;   // which slot index to fill (manual)
+let isSequence = false;     // auto sequence mode
+let sequenceIdx = 0;
+let isCounting = false;
+
+// Customize state
+let customBg = '#ffffff';
+let customBorderStyle = 'none';
+let customBorderColor = '#111111';
+let customCaption = '';
+let customCaptionPos = 'bottom';
+let customSticker = 'none';
+let customPattern = 'none';
+
+// ═══ MODE TOGGLE ═══
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeImport').classList.toggle('active', m==='import');
+  document.getElementById('modeCamera').classList.toggle('active', m==='camera');
+  document.getElementById('cameraExtras').style.display = m==='camera' ? 'block' : 'none';
+  renderSlots();
+}
+
+// ═══ SLOTS ═══
+function renderSlots() {
+  const c = document.getElementById('slots');
+  c.innerHTML = '';
+  for (let i = 0; i < COUNT; i++) {
+    const s = document.createElement('div');
+    s.className = 'slot' + (images[i] ? ' filled' : '') + (mode==='camera' ? ' cam-slot' : '');
+
+    if (images[i]) {
+      s.innerHTML = `<span class="slot-num">0${i+1}</span>
+        <img src="${images[i]}">
+        <button class="remove-btn" onclick="removeImg(${i},event)">remove</button>`;
+    } else if (mode === 'import') {
+      s.innerHTML = `<span class="slot-num">0${i+1}</span>
+        <span class="slot-hint">add photo</span>
+        <input type="file" accept="image/*" onchange="loadImg(${i},this)">`;
+    } else {
+      // Camera slot — click opens camera for this slot
+      s.onclick = () => openCamera(i);
+      s.innerHTML = `<span class="slot-num">0${i+1}</span>
+        <span class="cam-hint">
+          <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1L4 3H1C0.45 3 0 3.45 0 4V11C0 11.55 0.45 12 1 12H13C13.55 12 14 11.55 14 11V4C14 3.45 13.55 3 13 3H10L9 1H5ZM7 10C5.34 10 4 8.66 4 7C4 5.34 5.34 4 7 4C8.66 4 10 5.34 10 7C10 8.66 8.66 10 7 10Z" fill="currentColor"/>
+          </svg>
+          take photo
+        </span>`;
+    }
+    c.appendChild(s);
+  }
+}
+
+function loadImg(idx, input) {
+  const f = input.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    images[idx] = e.target.result;
+    printedDataURLs = null; printedRawURL = null;
+    renderSlots(); resetPrinterUI(); checkReady();
+  };
+  r.readAsDataURL(f);
+}
+
+function removeImg(idx, e) {
+  e.stopPropagation();
+  delete images[idx];
+  printedDataURLs = null; printedRawURL = null;
+  renderSlots(); resetPrinterUI(); checkReady();
+}
+
+function checkReady() {
+  document.getElementById('genBtn').disabled = Object.keys(images).length < COUNT || isPrinting;
+}
+
+// ═══ CAMERA ═══
+async function openCamera(slotIdx) {
+  camTargetSlot = slotIdx;
+  isSequence = false;
+  await startCameraStream();
+  updateCameraUI();
+  document.getElementById('cameraModal').classList.add('open');
+}
+
+async function startSequence() {
+  isSequence = true;
+  sequenceIdx = 0;
+  // Find first empty slot
+  while (sequenceIdx < COUNT && images[sequenceIdx]) sequenceIdx++;
+  if (sequenceIdx >= COUNT) { alert('All slots are filled!'); return; }
+  camTargetSlot = sequenceIdx;
+  await startCameraStream();
+  updateCameraUI();
+  document.getElementById('cameraModal').classList.add('open');
+  document.getElementById('camSeqNote').textContent = 'sequence mode — all 4 frames';
+}
+
+async function startCameraStream() {
+  try {
+    if (camStream) { camStream.getTracks().forEach(t => t.stop()); }
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: {ideal:1280}, height: {ideal:960} },
+      audio: false
+    });
+    const vid = document.getElementById('camVideo');
+    vid.srcObject = camStream;
+    await vid.play();
+  } catch(e) {
+    alert('Camera access denied or unavailable. Please check your browser permissions.');
+  }
+}
+
+function closeCamera() {
+  document.getElementById('cameraModal').classList.remove('open');
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  isCounting = false;
+  isSequence = false;
+  document.getElementById('camSeqNote').textContent = '';
+  document.getElementById('countdownNum').classList.remove('show');
+  document.getElementById('countdownNum').textContent = '';
+  document.getElementById('shutterBtn').disabled = false;
+}
+
+function updateCameraUI() {
+  const idx = isSequence ? sequenceIdx : camTargetSlot;
+  document.getElementById('camLabel').textContent = `frame ${idx+1} of ${COUNT}`;
+  document.getElementById('camFrameCount').textContent = `${Object.keys(images).length} / ${COUNT}`;
+
+  // Update dots
+  document.querySelectorAll('.frame-dot').forEach((d, i) => {
+    d.classList.remove('done', 'active');
+    if (images[i]) d.classList.add('done');
+    else if (i === idx) d.classList.add('active');
+  });
+
+  // Update thumbnails
+  for (let i = 0; i < COUNT; i++) {
+    const ct = document.getElementById(`ct${i}`);
+    ct.className = 'cam-thumb' + (images[i] ? ' filled' : '');
+    const existingImg = ct.querySelector('img');
+    if (existingImg) existingImg.remove();
+    const numEl = ct.querySelector('.cam-thumb-num');
+    numEl.textContent = `0${i+1}`;
+    if (images[i]) {
+      const im = document.createElement('img');
+      im.src = images[i];
+      ct.appendChild(im);
+    }
+  }
+}
+
+async function captureFrame() {
+  if (isCounting) return;
+  isCounting = true;
+  document.getElementById('shutterBtn').disabled = true;
+  document.getElementById('camStatus').textContent = '';
+
+  // 3-second countdown
+  const numEl = document.getElementById('countdownNum');
+  for (let n = 3; n >= 1; n--) {
+    numEl.textContent = n;
+    numEl.classList.remove('show');
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    numEl.classList.add('show');
+    await delay(800);
+    numEl.classList.remove('show');
+    await delay(100);
+  }
+  numEl.textContent = '';
+
+  // Flash
+  const flash = document.getElementById('flashOverlay');
+  flash.classList.add('flash');
+  await delay(60);
+  flash.classList.remove('flash');
+
+  // Capture from video
+  const vid = document.getElementById('camVideo');
+  const cap = document.getElementById('camCapCanvas');
+  cap.width = vid.videoWidth || 640;
+  cap.height = vid.videoHeight || 480;
+  const ctx = cap.getContext('2d');
+  ctx.save();
+  ctx.scale(-1, 1); // un-mirror
+  ctx.drawImage(vid, -cap.width, 0, cap.width, cap.height);
+  ctx.restore();
+  const dataURL = cap.toDataURL('image/jpeg', 0.92);
+
+  // Store
+  const slotIdx = isSequence ? sequenceIdx : camTargetSlot;
+  images[slotIdx] = dataURL;
+  checkReady();
+  resetPrinterUI();
+
+  isCounting = false;
+
+  // Sequence: advance or close
+  if (isSequence) {
+    sequenceIdx++;
+    // Skip already filled
+    while (sequenceIdx < COUNT && images[sequenceIdx]) sequenceIdx++;
+
+    if (sequenceIdx < COUNT) {
+      camTargetSlot = sequenceIdx;
+      document.getElementById('shutterBtn').disabled = false;
+      document.getElementById('camStatus').textContent = 'ready';
+      updateCameraUI();
+      // Short pause before next shot in sequence
+      await delay(600);
+      captureFrame(); // auto-trigger next
+    } else {
+      // All done
+      document.getElementById('camStatus').textContent = 'all done!';
+      updateCameraUI();
+      await delay(1000);
+      closeCamera();
+      renderSlots();
+    }
+  } else {
+    // Manual mode: update UI, re-enable
+    updateCameraUI();
+    renderSlots();
+    document.getElementById('shutterBtn').disabled = false;
+    document.getElementById('camStatus').textContent = 'saved';
+    // Auto-advance to next empty slot if any
+    let next = slotIdx + 1;
+    while (next < COUNT && images[next]) next++;
+    if (next < COUNT) {
+      camTargetSlot = next;
+      await delay(600);
+      document.getElementById('camStatus').textContent = 'ready';
+      updateCameraUI();
+    } else if (Object.keys(images).length === COUNT) {
+      await delay(800);
+      closeCamera();
+      renderSlots();
+    }
+  }
+}
+
+// ═══ PAGE NAV ═══
+function goToCustomize() {
+  const p1=document.getElementById('page1'), p2=document.getElementById('page2');
+  p1.classList.remove('active');
+  setTimeout(()=>{ p2.classList.add('active'); renderPreview(); }, 60);
+}
+function goToPage1() {
+  const p1=document.getElementById('page1'), p2=document.getElementById('page2');
+  p2.classList.remove('active');
+  setTimeout(()=>p1.classList.add('active'), 60);
+}
+
+// ═══ PRINT ═══
+function resetPrinterUI() {
+  isPrinting = false;
+  setStatus('ready');
+  document.getElementById('roller').classList.remove('spinning');
+  document.getElementById('postActions').classList.remove('visible');
+  setLights({});
+  const clip=document.getElementById('stripClip'), paper=document.getElementById('stripPaper');
+  clip.style.height='0px'; paper.style.transform='translateY(0)'; paper.innerHTML='';
+}
+function setStatus(t) { document.getElementById('statusTxt').textContent=t; }
+function setLights({a,g}={}) {
+  document.getElementById('lA').className='light'+(a?' '+a:'');
+  document.getElementById('lG').className='light'+(g?' '+g:'');
+}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+const easeIO=t=>t<0.5?2*t*t:-1+(4-2*t)*t;
+function animateY(el,from,to,ms){return new Promise(res=>{const t0=performance.now();(function tick(now){const p=Math.min(1,(now-t0)/ms);el.style.transform=`translateY(${from+(to-from)*easeIO(p)}px)`;p<1?requestAnimationFrame(tick):res();})(performance.now());})}
+function animateClip(el,from,to,ms){return new Promise(res=>{const t0=performance.now();(function tick(now){const p=Math.min(1,(now-t0)/ms);el.style.height=`${from+(to-from)*easeIO(p)}px`;p<1?requestAnimationFrame(tick):res();})(performance.now());});}function scanPhoto(idx,fH){return new Promise(res=>{const scan=document.getElementById(`scan${idx}`),rev=document.getElementById(`rev${idx}`);if(!scan||!rev){res();return;}const dur=800,t0=performance.now();scan.style.opacity='1';rev.style.height=fH+'px';rev.style.top='0';(function tick(now){const p=Math.min(1,(now-t0)/dur),y=p*fH;scan.style.top=(y-1)+'px';rev.style.height=(fH-y)+'px';rev.style.top=y+'px';p<1?requestAnimationFrame(tick):(scan.style.opacity='0',rev.style.height='0',res());})(performance.now());});}
+
+async function startPrint() {
+  if(isPrinting)return;
+  isPrinting=true; printedDataURLs=null; printedRawURL=null;
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('postActions').classList.remove('visible');
+  printedDataURLs=await processBW();
+
+  const fH=108, fG=6, padBot=10, padTop=14;
+  const paper=document.getElementById('stripPaper');
+  const clip=document.getElementById('stripClip');
+  paper.innerHTML=''; clip.style.height='0px';
+
+  // Year label sits at the visual bottom of the strip (first in DOM = bottom in column-reverse)
+  const lbl=document.createElement('div'); lbl.className='strip-label';
+  lbl.textContent=new Date().getFullYear(); paper.appendChild(lbl);
+
+  setStatus('warming up'); setLights({a:'amber pulsing'}); await delay(800);
+  setStatus('printing'); setLights({a:'amber',g:'green pulsing'});
+  document.getElementById('roller').classList.add('spinning');
+
+  const RATE=0.10;
+
+  // Print bottom-to-top: photo 0 first (emerges at bottom), photo 3 last (at top)
+  for (let i = 0; i < COUNT; i++) {
+    setStatus(`frame ${i+1} of ${COUNT}`);
+
+    // Build frame fully covered by reveal overlay
+    const fr=document.createElement('div'); fr.className='strip-photo-frame';
+    fr.style.marginTop = fG + 'px';
+    fr.innerHTML = `<img src="${printedDataURLs[i]}">
+      <div class="photo-reveal" id="rev${i}" style="height:${fH}px;top:0;position:absolute;left:0;right:0;background:#f0f0f0;pointer-events:none;"></div>
+      <div class="scan-line" id="scan${i}"></div>`;
+
+    // Append: in column-reverse, last appended = visually highest
+    paper.appendChild(fr);
+
+    // Grow clip to reveal this photo (upward)
+    const prevH = parseFloat(clip.style.height) || 0;
+    const labelH = 26;
+    const targetH = labelH + padBot + i * (fH + fG) + fH + padTop;
+    await animateClip(clip, prevH, targetH, (targetH - prevH) / RATE);
+
+    // Scan-develop this photo
+    document.getElementById('roller').classList.remove('spinning');
+    await scanPhoto(i, fH);
+    document.getElementById('roller').classList.add('spinning');
+    await delay(120);
+  }
+
+  document.getElementById('roller').classList.remove('spinning');
+  setLights({g:'green'}); setStatus('done');
+  printedRawURL=await buildPrintCanvas();
+  document.getElementById('postActions').classList.add('visible');
+  isPrinting=false; checkReady();
+}
+
+function addGrain(data) {
+  for (let p = 0; p < data.length; p += 4) {
+    // Average two randoms for a softer, more organic grain distribution
+    const grain = ((Math.random() + Math.random()) / 2 - 0.5) * 38;
+    data[p]   = Math.min(255, Math.max(0, data[p]   + grain));
+    data[p+1] = Math.min(255, Math.max(0, data[p+1] + grain));
+    data[p+2] = Math.min(255, Math.max(0, data[p+2] + grain));
+  }
+}
+
+function processBW(){return Promise.all(Array.from({length:COUNT},(_,i)=>new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=400;c.height=300;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,400,300);const d=ctx.getImageData(0,0,400,300);for(let p=0;p<d.data.length;p+=4){const g=d.data[p]*.299+d.data[p+1]*.587+d.data[p+2]*.114;const v=Math.min(255,Math.max(0,(g-128)*1.15+128));d.data[p]=d.data[p+1]=d.data[p+2]=v;}addGrain(d.data);ctx.putImageData(d,0,0);res(c.toDataURL('image/jpeg',0.92));};img.src=images[i];})));}
+
+function buildPrintCanvas(){return new Promise(res=>{const c=document.getElementById('exportCanvas');const pW=400,pH=300,padX=24,padY=16,gap=10,bot=44;c.width=pW+padX*2;c.height=COUNT*pH+(COUNT-1)*gap+padY*2+bot;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);let done=0;printedDataURLs.forEach((src,i)=>{const img=new Image();img.onload=()=>{ctx.drawImage(img,padX,padY+i*(pH+gap),pW,pH);if(++done===COUNT){ctx.strokeStyle='#eee';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padX,c.height-36);ctx.lineTo(padX+pW,c.height-36);ctx.stroke();ctx.fillStyle='#bbb';ctx.font='300 10px monospace';ctx.textAlign='center';ctx.fillText(new Date().getFullYear(),c.width/2,c.height-16);res(c.toDataURL('image/jpeg',0.93));}};img.src=src;});});}
+
+function downloadStrip(){if(!printedRawURL)return;const a=document.createElement('a');a.href=printedRawURL;a.download='photo-strip.jpg';a.click();}
+
+// ═══ CUSTOMIZE ═══
+function setBg(el,color){customBg=color;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));el.classList.add('active');renderPreview();}
+function setBgCustom(input){customBg=input.value;document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));input.closest('.swatch').classList.add('active');renderPreview();}
+function setBorderStyle(el,style){customBorderStyle=style;document.querySelectorAll('.border-opt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPreview();}
+function setBorderColor(val){customBorderColor=val;renderPreview();}
+function setCaptionPos(el,pos){customCaptionPos=pos;document.querySelectorAll('.pos-opt').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderPreview();}
+function setSticker(el,emoji){customSticker=emoji;document.querySelectorAll('.sticker-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPreview();}
+function setPattern(el,pat){customPattern=pat;document.querySelectorAll('.pattern-opt').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPreview();}
+
+// Draw a tiling pattern onto a canvas ctx
+function drawPattern(ctx, w, h, pat, bg) {
+  if (pat === 'none') return;
+  const dark = isDarkBg();
+  const lineColor = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.10)';
+  const dotColor  = dark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.14)';
+
+  ctx.save();
+  ctx.strokeStyle = lineColor;
+  ctx.fillStyle   = dotColor;
+
+  const s = 18; // base cell size
+
+  if (pat === 'dots') {
+    for (let x = 0; x <= w; x += s)
+      for (let y = 0; y <= h; y += s) {
+        ctx.beginPath(); ctx.arc(x, y, 1.5, 0, Math.PI*2); ctx.fill();
+      }
+  } else if (pat === 'grid') {
+    ctx.lineWidth = 0.7;
+    for (let x = 0; x < w; x += s) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+    for (let y = 0; y < h; y += s) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  } else if (pat === 'lines') {
+    ctx.lineWidth = 0.7;
+    for (let y = 0; y < h; y += s) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  } else if (pat === 'diagonal') {
+    ctx.lineWidth = 0.7;
+    for (let d = -h; d < w + h; d += s) {
+      ctx.beginPath(); ctx.moveTo(d, 0); ctx.lineTo(d + h, h); ctx.stroke();
+    }
+  } else if (pat === 'crosshatch') {
+    ctx.lineWidth = 0.6;
+    for (let d = -h; d < w + h; d += s) {
+      ctx.beginPath(); ctx.moveTo(d,0); ctx.lineTo(d+h,h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(d+h,0); ctx.lineTo(d,h); ctx.stroke();
+    }
+  } else if (pat === 'checker') {
+    const cs = s;
+    ctx.fillStyle = dotColor;
+    for (let x = 0; x < w; x += cs)
+      for (let y = 0; y < h; y += cs)
+        if (Math.floor(x/cs + y/cs) % 2 === 0)
+          ctx.fillRect(x, y, cs, cs);
+  } else if (pat === 'zigzag') {
+    ctx.lineWidth = 0.8;
+    const zw = s, zh = s/2;
+    for (let y = 0; y < h + zh; y += zh * 2) {
+      ctx.beginPath();
+      for (let x = 0; x < w + zw; x += zw) {
+        ctx.lineTo(x, y + (Math.floor(x/zw)%2===0 ? 0 : zh));
+      }
+      ctx.stroke();
+    }
+  } else if (pat === 'confetti') {
+    // Seeded tiny shapes scattered around
+    const seed = 42;
+    const rand = (n) => { let x = Math.sin(n * 9301 + seed * 49297) * 233280; return x - Math.floor(x); };
+    for (let i = 0; i < Math.floor(w * h / 600); i++) {
+      const x = rand(i * 2)     * w;
+      const y = rand(i * 2 + 1) * h;
+      const r = 2 + rand(i * 3) * 4;
+      const type = Math.floor(rand(i * 4) * 3);
+      ctx.globalAlpha = 0.15 + rand(i*5)*0.12;
+      if (type === 0) { ctx.fillStyle = dotColor; ctx.beginPath(); ctx.arc(x,y,r/2,0,Math.PI*2); ctx.fill(); }
+      else if (type === 1) { ctx.fillStyle = dotColor; ctx.fillRect(x-r/2,y-r/2,r,r*0.5); }
+      else { ctx.strokeStyle = lineColor; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x-r,y); ctx.lineTo(x+r,y); ctx.stroke(); }
+    }
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+// Render small pattern preview thumbnails
+function renderPatternPreviews() {
+  document.querySelectorAll('.pat-preview').forEach(c => {
+    c.width = 38; c.height = 38;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,38,38);
+    drawPattern(ctx, 38, 38, c.dataset.pat, '#ffffff');
+  });
+}
+
+function renderPreview(){
+  customCaption=document.getElementById('captionInput').value;
+  drawStripToCanvas(document.getElementById('previewCanvas'),printedDataURLs,200);
+}
+
+function isDarkBg(){const hex=customBg.replace('#','');const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);return(r*.299+g*.587+b*.114)<100;}
+
+function drawStripToCanvas(canvas,bwImages,displayW){
+  const scale=displayW/460;
+  const photoW=Math.round(400*scale),photoH=Math.round(300*scale);
+  const padX=Math.round(30*scale),padY=Math.round(20*scale),gap=Math.round(12*scale);
+  const captionH=customCaption?Math.round(34*scale):0;
+  const stickerH=customSticker!=='none'?Math.round(42*scale):0;
+  const footerH=Math.round(30*scale);
+  const totalW=photoW+padX*2;
+  const topExtra=customCaptionPos==='top'?captionH+stickerH:0;
+  const botExtra=customCaptionPos==='bottom'?captionH+stickerH:0;
+  const totalH=padY+topExtra+COUNT*photoH+(COUNT-1)*gap+footerH+botExtra+padY;
+  canvas.width=totalW; canvas.height=totalH;
+  canvas.style.width=displayW+'px'; canvas.style.height=Math.round(totalH*(displayW/totalW))+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle=customBg; ctx.fillRect(0,0,totalW,totalH);
+  drawPattern(ctx, totalW, totalH, customPattern, customBg);
+  if(customBorderStyle!=='none'){
+    const bw=customBorderStyle==='thick'?Math.round(7*scale):customBorderStyle==='double'?Math.round(3*scale):Math.round(2*scale);
+    const r=customBorderStyle==='soft'?Math.round(14*scale):0;
+    ctx.strokeStyle=customBorderColor; ctx.lineWidth=bw;
+    drawRoundRect(ctx,bw/2,bw/2,totalW-bw,totalH-bw,r); ctx.stroke();
+    if(customBorderStyle==='double'){const ins=bw+Math.round(5*scale);ctx.lineWidth=Math.round(1*scale);drawRoundRect(ctx,ins,ins,totalW-ins*2,totalH-ins*2,Math.max(0,r-Math.round(5*scale)));ctx.stroke();}
+  }
+  let curY=padY;
+  if(customCaptionPos==='top'){
+    if(customSticker!=='none'){ctx.font=`${Math.round(20*scale)}px serif`;ctx.textAlign='center';ctx.fillStyle=isDarkBg()?'#aaa':'#555';ctx.fillText(customSticker,totalW/2,curY+stickerH*.72);curY+=stickerH;}
+    if(customCaption){renderCaption(ctx,customCaption,totalW,curY,captionH,scale);curY+=captionH;}
+  }
+  const photoStartY=curY;
+  for(let i=0;i<COUNT;i++){
+    const oy=photoStartY+i*(photoH+gap);
+    if(bwImages&&bwImages[i]){const img=new Image();img.src=bwImages[i];ctx.drawImage(img,padX,oy,photoW,photoH);}
+    else{ctx.fillStyle='#e4e4e4';ctx.fillRect(padX,oy,photoW,photoH);ctx.fillStyle='#bbb';ctx.font=`${Math.round(10*scale)}px DM Mono,monospace`;ctx.textAlign='center';ctx.fillText(`frame ${i+1}`,totalW/2,oy+photoH/2+4);}
+  }
+  curY=photoStartY+COUNT*photoH+(COUNT-1)*gap;
+  ctx.strokeStyle=isDarkBg()?'#2a2a2a':'#ebebeb'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(padX,curY+Math.round(8*scale));ctx.lineTo(padX+photoW,curY+Math.round(8*scale));ctx.stroke();
+  ctx.fillStyle=isDarkBg()?'#555':'#ccc'; ctx.font=`${Math.round(8*scale)}px DM Mono,monospace`; ctx.textAlign='center';
+  ctx.fillText(new Date().getFullYear(),totalW/2,curY+Math.round(21*scale)); curY+=footerH;
+  if(customCaptionPos==='bottom'){
+    if(customCaption){renderCaption(ctx,customCaption,totalW,curY,captionH,scale);curY+=captionH;}
+    if(customSticker!=='none'){ctx.font=`${Math.round(20*scale)}px serif`;ctx.textAlign='center';ctx.fillStyle=isDarkBg()?'#aaa':'#555';ctx.fillText(customSticker,totalW/2,curY+stickerH*.72);}
+  }
+}
+
+function renderCaption(ctx,text,totalW,y,h,scale){ctx.fillStyle=isDarkBg()?'#888':'#777';ctx.font=`300 ${Math.round(9*scale)}px DM Mono,monospace`;ctx.textAlign='center';ctx.fillText(text.toUpperCase(),totalW/2,y+h*.65);}
+
+function drawRoundRect(ctx,x,y,w,h,r){if(r===0){ctx.beginPath();ctx.rect(x,y,w,h);return;}ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+
+function exportCustomized(){
+  const c=document.getElementById('exportCanvas');
+  drawStripToCanvas(c,printedDataURLs,460);
+  setTimeout(()=>{const a=document.createElement('a');a.href=c.toDataURL('image/jpeg',0.95);a.download='photo-strip-custom.jpg';a.click();},120);
+}
+
+// ═══ INIT ═══
+renderSlots();
+resetPrinterUI();
+renderPatternPreviews();
+</script>
+</body>
+</html>
